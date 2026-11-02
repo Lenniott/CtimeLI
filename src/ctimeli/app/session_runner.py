@@ -206,11 +206,7 @@ class SessionRunner:
         session = self.session
         if self._call_link_opened:
             return
-        if not (
-            session.kind is SessionKind.CALENDAR
-            and session.call_url
-            and not session.room
-        ):
+        if not (session.kind is SessionKind.CALENDAR and session.call_url):
             return
         if is_work_wifi(self.wifi.current_ssid(), session.config.work_wifi_ssids):
             return

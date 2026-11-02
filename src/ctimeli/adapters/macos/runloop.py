@@ -59,7 +59,10 @@ def run_cocoa_watch_loop(watch) -> int:
             if not watch._tick_once(pump_idle=False, yield_loop=False):
                 AppHelper.stopEventLoop()
                 return
-            AppHelper.callLater(watch.tick_interval(), tick)
+            # Schedule next tick. If quit was just set, schedule immediately (0 delay)
+            # to wake up the runloop faster. Otherwise use the normal interval.
+            delay = 0 if watch._quit else watch.tick_interval()
+            AppHelper.callLater(delay, tick)
 
         AppHelper.callLater(0, tick)
         AppHelper.runEventLoop()

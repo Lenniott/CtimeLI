@@ -304,6 +304,43 @@ def test_room_calendar_shows_room_on_stop_overlay():
     assert any("Room 4B" in line for line in h.stop_overlay.shown_lines)
 
 
+def test_room_and_call_off_work_wifi_open_link_and_skip_overlay():
+    h = Harness(
+        block_on_end=True,
+        duration=2.0,
+        kind=SessionKind.CALENDAR,
+        call_url="https://zoom.us/j/123",
+        room="Room 4B",
+        work_ssids=frozenset({"Office"}),
+        wifi_ssid="Home",
+    )
+    h.runner.pump()
+    h.clock.advance(5.0)
+    h.runner.pump()
+    assert h.session.state is SessionState.DONE
+    assert h.url_opener.opened == ["https://zoom.us/j/123"]
+    assert h.stop_overlay.shown_lines is None
+
+
+def test_room_and_call_on_work_wifi_show_room_without_opening_link():
+    h = Harness(
+        block_on_end=True,
+        duration=2.0,
+        kind=SessionKind.CALENDAR,
+        call_url="https://zoom.us/j/123",
+        room="Room 4B",
+        work_ssids=frozenset({"Office"}),
+        wifi_ssid="Office",
+    )
+    h.runner.pump()
+    h.clock.advance(5.0)
+    h.runner.pump()
+    assert h.session.state is SessionState.BLOCKING
+    assert h.url_opener.opened == []
+    assert h.stop_overlay.shown_lines is not None
+    assert any("Room 4B" in line for line in h.stop_overlay.shown_lines)
+
+
 def test_hard_stop_shows_hard_stop_overlay_lines():
     cfg = AppConfig(block_on_end=True, hard_stop_stroke_g=0.55)
     target = STARTED + dt.timedelta(seconds=2.0)
