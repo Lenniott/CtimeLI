@@ -122,11 +122,10 @@ class Session:
         return STROKE_BLUE
 
     def skips_block_for_remote_call(self, *, on_work_wifi: bool = False) -> bool:
-        """Calendar sessions with a remote call link skip block-on-end off work Wi-Fi."""
+        """Calendar sessions with a call link skip block-on-end off work Wi-Fi."""
         return (
             self.kind is SessionKind.CALENDAR
             and bool(self.call_url)
-            and not self.room
             and not on_work_wifi
         )
 

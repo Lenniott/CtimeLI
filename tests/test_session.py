@@ -191,7 +191,7 @@ def test_remote_call_on_work_wifi_still_blocks():
     assert session.state is SessionState.BLOCKING
 
 
-def test_room_calendar_still_blocks_on_end():
+def test_room_and_call_off_work_wifi_skip_block_on_end():
     session = make_session(
         block_on_end=True,
         duration=10.0,
@@ -200,7 +200,20 @@ def test_room_calendar_still_blocks_on_end():
         room="Room 4B",
     )
     session.start()
-    session.tick(STARTED + dt.timedelta(seconds=20), FRAME)
+    session.tick(STARTED + dt.timedelta(seconds=20), FRAME, on_work_wifi=False)
+    assert session.state is SessionState.DONE
+
+
+def test_room_and_call_on_work_wifi_blocks_on_end():
+    session = make_session(
+        block_on_end=True,
+        duration=10.0,
+        kind=SessionKind.CALENDAR,
+        call_url="https://zoom.us/j/123",
+        room="Room 4B",
+    )
+    session.start()
+    session.tick(STARTED + dt.timedelta(seconds=20), FRAME, on_work_wifi=True)
     assert session.state is SessionState.BLOCKING
 
 

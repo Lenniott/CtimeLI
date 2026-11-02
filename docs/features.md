@@ -239,12 +239,14 @@ not new frame-loop branches.
 
 ### Calendar call links
 
-- **Trigger**: calendar event with a meeting URL (`call_url`) and no physical
-  `room`.
+- **Trigger**: calendar event with a meeting URL (`call_url`).
 - **Off work Wi-Fi** (`WORK_WIFI_SSIDS`): at zero, opens the URL in the default
   browser and ends cleanly — **no** stop overlay, **no** window tidy, even when
   `BLOCK_ON_END=true` (so the meeting tab is not minimised).
 - **On work Wi-Fi**: no browser open; block-on-end runs normally if enabled.
+
+If an event includes both `call_url` and `room`, Wi-Fi decides precedence:
+off work Wi-Fi opens the link; on work Wi-Fi the room appears in the stop overlay.
 
 **Acceptance**: off-work Wi-Fi, Zoom URL event, `BLOCK_ON_END=true` → browser
 opens, no full-screen overlay, Chrome stays foreground.

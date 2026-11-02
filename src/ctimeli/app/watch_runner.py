@@ -194,6 +194,7 @@ class WatchRunner:
     def _poll_menu(self) -> None:
         for action in self.menu_bar.poll_actions():
             if action.kind == "quit":
+                self.logger.info(tagged("QUIT", "Menu quit clicked."))
                 self._quit = True
             elif action.kind == "start_minutes":
                 target = self.clock.now() + dt.timedelta(minutes=action.minutes)
